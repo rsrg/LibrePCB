@@ -92,9 +92,17 @@ void SGI_Symbol::updateCacheAndRepaint() noexcept
     // circles
     for (const Circle& circle : mLibSymbol.getCircles()) {
         if (circle.isGrabArea()) {
+            // get circle radius, including compensation for the stroke width
             qreal w = circle.getLineWidth()->toPx() / 2;
-            qreal r = circle.getDiameter()->toPx() / 2;
-            mShape.addEllipse(circle.getCenter().toPxQPointF(), r + w, r + w);
+            qreal r = circle.getDiameter()->toPx() / 2 + w;
+
+            // get the bounding rectangle for the circle
+            QPointF center = circle.getCenter().toPxQPointF();
+            QRectF boundingRect = QRectF(QPointF(center.x() - r, center.y() - r), QSizeF(r, r));
+
+            // update bounding rectangle and shape
+            mBoundingRect = mBoundingRect.united(boundingRect);
+            mShape.addEllipse(circle.getCenter().toPxQPointF(), r, r);
         }
     }
 
