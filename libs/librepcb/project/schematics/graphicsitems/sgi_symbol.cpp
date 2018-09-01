@@ -83,6 +83,15 @@ void SGI_Symbol::updateCacheAndRepaint() noexcept
         if (polygon.isGrabArea()) mShape = mShape.united(polygonPath);
     }
 
+    // circles
+    for (const Circle& circle : mLibSymbol.getCircles()) {
+        if (circle.isGrabArea()) {
+            qreal w = circle.getLineWidth()->toPx() / 2;
+            qreal r = circle.getDiameter()->toPx() / 2;
+            mShape.addEllipse(circle.getCenter().toPxQPointF(), r + w, r + w);
+        }
+    }
+
     // texts
     mCachedTextProperties.clear();
     for (const Text& text : mLibSymbol.getTexts()) {
