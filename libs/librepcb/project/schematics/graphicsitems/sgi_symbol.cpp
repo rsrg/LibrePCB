@@ -66,7 +66,13 @@ void SGI_Symbol::updateCacheAndRepaint() noexcept
 {
     prepareGeometryChange();
 
+    // Docs: https://doc.qt.io/qt-5/qgraphicsitem.html#boundingRect
     mBoundingRect = QRectF();
+
+    // Docs: https://doc.qt.io/qt-5/qgraphicsitem.html#shape
+    // The default implementation calls boundingRect() to return a simple rectangular shape,
+    // but subclasses can reimplement this function to return a more accurate shape
+    // for non-rectangular items.
     mShape = QPainterPath();
     mShape.setFillRule(Qt::WindingFill);
 
