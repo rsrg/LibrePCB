@@ -83,25 +83,32 @@ void SGI_Symbol::updateCacheAndRepaint() noexcept
 
     // polygons
     for (const Polygon& polygon : mLibSymbol.getPolygons()) {
+        // get the bounding rectangle for the polygon
         QPainterPath polygonPath = polygon.getPath().toQPainterPathPx();
         qreal w = polygon.getLineWidth()->toPx() / 2;
+
+        // update bounding rectangle
         mBoundingRect = mBoundingRect.united(polygonPath.boundingRect().adjusted(-w, -w, w, w));
+
+        // update shape
         if (polygon.isGrabArea()) mShape = mShape.united(polygonPath);
     }
 
     // circles
     for (const Circle& circle : mLibSymbol.getCircles()) {
+        // get circle radius, including compensation for the stroke width
+        qreal w = circle.getLineWidth()->toPx() / 2;
+        qreal r = circle.getDiameter()->toPx() / 2 + w;
+
+        // get the bounding rectangle for the circle
+        QPointF center = circle.getCenter().toPxQPointF();
+        QRectF boundingRect = QRectF(QPointF(center.x() - r, center.y() - r), QSizeF(r, r));
+
+        // update bounding rectangle
+        mBoundingRect = mBoundingRect.united(boundingRect);
+
+        // update shape
         if (circle.isGrabArea()) {
-            // get circle radius, including compensation for the stroke width
-            qreal w = circle.getLineWidth()->toPx() / 2;
-            qreal r = circle.getDiameter()->toPx() / 2 + w;
-
-            // get the bounding rectangle for the circle
-            QPointF center = circle.getCenter().toPxQPointF();
-            QRectF boundingRect = QRectF(QPointF(center.x() - r, center.y() - r), QSizeF(r, r));
-
-            // update bounding rectangle and shape
-            mBoundingRect = mBoundingRect.united(boundingRect);
             mShape.addEllipse(circle.getCenter().toPxQPointF(), r, r);
         }
     }
