@@ -36,4 +36,4 @@
 	url = https://github.com/LibrePCB/type_safe.git
 [submodule "i18n"]
 	path = i18n
-	url = https://github.com/ubruhin/librepcb-i18n.git
+	url = ../../ubruhin/librepcb-i18n.git
